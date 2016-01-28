@@ -9,5 +9,5 @@ func TestLoadConfig(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error loading config: %s", err.Error())
 	}
-	//t.Fatal(c)
+	t.Fatal(c)
 }

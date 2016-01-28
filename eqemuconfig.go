@@ -9,8 +9,9 @@ import (
 type Config struct {
 	Shortname string   `xml:"world>shortname"`
 	Longame   string   `xml:"world>longname"`
-	Database  Database `xml:"database"`
-	QuestsDir string   `xml:"directories>quests"`
+	Database  Database `xml:"database,omitempty"`
+	QuestsDir string   `xml:"directories>quests,omitempty"`
+	Discord   Discord  `xml:"discord,omitempty"`
 }
 
 type Database struct {
@@ -19,6 +20,13 @@ type Database struct {
 	Username string `xml:"username"`
 	Password string `xml:"password"`
 	Db       string `xml:"db"`
+}
+
+type Discord struct {
+	Username  string `xml:"username,omitempty"`
+	Password  string `xml:"password,omitempty"`
+	ServerID  int64  `xml:"serverid,omitempty"`
+	ChannelID int64  `xml:"channelid,omitempty"`
 }
 
 func LoadConfig() (config Config, err error) {
