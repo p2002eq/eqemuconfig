@@ -23,10 +23,11 @@ type Database struct {
 }
 
 type Discord struct {
-	Username  string `xml:"username,omitempty"`
-	Password  string `xml:"password,omitempty"`
-	ServerID  int64  `xml:"serverid,omitempty"`
-	ChannelID int64  `xml:"channelid,omitempty"`
+	Username    string `xml:"username,omitempty"`
+	Password    string `xml:"password,omitempty"`
+	ServerID    string `xml:"serverid,omitempty"`
+	ChannelID   string `xml:"channelid,omitempty"`
+	RefreshRate int64  `xml:"refreshrate,omitempty"`
 }
 
 func LoadConfig() (config Config, err error) {
