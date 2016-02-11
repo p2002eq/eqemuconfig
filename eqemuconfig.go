@@ -30,15 +30,22 @@ type Discord struct {
 	RefreshRate int64  `xml:"refreshrate,omitempty"`
 }
 
-func LoadConfig() (config Config, err error) {
+var config *Config
+
+func GetConfig() (respConfig *Config, err error) {
+	if config != nil {
+		respConfig = config
+		return
+	}
+
 	f, err := os.Open("eqemu_config.xml")
 	if err != nil {
 		err = fmt.Errorf("Error opening config: %s", err.Error())
 		return
 	}
-
+	config = &Config{}
 	dec := xml.NewDecoder(f)
-	err = dec.Decode(&config)
+	err = dec.Decode(config)
 	if err != nil {
 		err = fmt.Errorf("Error decoding config: %s", err.Error())
 		return
@@ -46,5 +53,6 @@ func LoadConfig() (config Config, err error) {
 	if config.QuestsDir == "" {
 		config.QuestsDir = "quests"
 	}
+	respConfig = config
 	return
 }
