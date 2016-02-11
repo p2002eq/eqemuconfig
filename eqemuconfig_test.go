@@ -4,8 +4,8 @@ import (
 	"testing"
 )
 
-func TestLoadConfig(t *testing.T) {
-	c, err := LoadConfig()
+func TestGetConfig(t *testing.T) {
+	c, err := GetConfig()
 	if err != nil {
 		t.Fatalf("Error loading config: %s", err.Error())
 	}

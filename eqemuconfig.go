@@ -3,7 +3,9 @@ package eqemuconfig
 import (
 	"encoding/xml"
 	"fmt"
+	"io/ioutil"
 	"os"
+	"strings"
 )
 
 type Config struct {
@@ -47,7 +49,27 @@ func GetConfig() (respConfig *Config, err error) {
 	dec := xml.NewDecoder(f)
 	err = dec.Decode(config)
 	if err != nil {
-		err = fmt.Errorf("Error decoding config: %s", err.Error())
+		if !strings.Contains(err.Error(), "EOF") {
+			err = fmt.Errorf("Error decoding config: %s", err.Error())
+			return
+		}
+
+		//This may be a ?> issue, let's fix it.
+		bConfig, rErr := ioutil.ReadFile("eqemu_config.xml")
+		if rErr != nil {
+			err = fmt.Errorf("Error reading config: %s", rErr.Error())
+			return
+		}
+		strConfig := strings.Replace(string(bConfig), "<?xml version=\"1.0\">", "<?xml version=\"1.0\"?>", 1)
+		err = xml.Unmarshal([]byte(strConfig), config)
+		if err != nil {
+			err = fmt.Errorf("Failed to unmarshal config: %s", err.Error())
+			return
+		}
+	}
+	err = f.Close()
+	if err != nil {
+		err = fmt.Errorf("Failed to close config: %s", err.Error())
 		return
 	}
 	if config.QuestsDir == "" {
