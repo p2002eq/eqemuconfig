@@ -34,7 +34,7 @@ type Discord struct {
 }
 
 type Channel struct {
-	ChannelId   string `xml:"channelid,attr"`
+	ChannelID   string `xml:"channelid,attr"`
 	ChannelName string `xml:"channelname,attr"`
 }
 

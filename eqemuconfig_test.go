@@ -9,5 +9,5 @@ func TestGetConfig(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error loading config: %s", err.Error())
 	}
-	//t.Fatal(c.Discord.Channels)
+	t.Log(c.Discord.Channels)
 }
