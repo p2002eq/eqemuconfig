@@ -25,11 +25,17 @@ type Database struct {
 }
 
 type Discord struct {
-	Username    string `xml:"username,omitempty"`
-	Password    string `xml:"password,omitempty"`
-	ServerID    string `xml:"serverid,omitempty"`
-	ChannelID   string `xml:"channelid,omitempty"`
-	RefreshRate int64  `xml:"refreshrate,omitempty"`
+	Username    string    `xml:"username,omitempty"`
+	Password    string    `xml:"password,omitempty"`
+	ServerID    string    `xml:"serverid,omitempty"`
+	ChannelID   string    `xml:"channelid,omitempty"`
+	RefreshRate int64     `xml:"refreshrate,omitempty"`
+	Channels    []Channel `xml:"channel"`
+}
+
+type Channel struct {
+	ChannelId   string `xml:"channelid,attr"`
+	ChannelName string `xml:"channelname,attr"`
 }
 
 var config *Config
