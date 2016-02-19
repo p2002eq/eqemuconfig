@@ -9,11 +9,12 @@ import (
 )
 
 type Config struct {
-	Shortname string   `xml:"world>shortname"`
-	Longame   string   `xml:"world>longname"`
-	Database  Database `xml:"database,omitempty"`
-	QuestsDir string   `xml:"directories>quests,omitempty"`
-	Discord   Discord  `xml:"discord,omitempty"`
+	Shortname string    `xml:"world>shortname"`
+	Longame   string    `xml:"world>longname"`
+	Database  Database  `xml:"database,omitempty"`
+	QuestsDir string    `xml:"directories>quests,omitempty"`
+	Discord   Discord   `xml:"discord,omitempty"`
+	Twitter   []Twitter `xml:"twitter,omitempty"`
 }
 
 type Database struct {
@@ -36,6 +37,18 @@ type Discord struct {
 type Channel struct {
 	ChannelID   string `xml:"channelid,attr"`
 	ChannelName string `xml:"channelname,attr"`
+}
+
+type Twitter struct {
+	Owner             string `xml:"owner,attr,omitempty"`
+	ConsumerKey       string `xml:"consumerkey,attr,omitempty"`
+	ConsumerSecret    string `xml:"consumersecret,attr,omitempty"`
+	AccessToken       string `xml:"accesstoken,attr,omitempty"`
+	AccessTokenSecret string `xml:"accesstokensecret,attr,omitempty"`
+}
+
+type Graph struct {
+	TablePrefix string `xml:"tableprefix,attr,omitempty"`
 }
 
 var config *Config
