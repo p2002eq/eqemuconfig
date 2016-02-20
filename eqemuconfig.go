@@ -15,6 +15,7 @@ type Config struct {
 	QuestsDir string    `xml:"directories>quests,omitempty"`
 	Discord   Discord   `xml:"discord,omitempty"`
 	Twitter   []Twitter `xml:"twitter,omitempty"`
+	Github    Github    `xml:"github,omitempty"`
 }
 
 type Database struct {
@@ -45,6 +46,17 @@ type Twitter struct {
 	ConsumerSecret    string `xml:"consumersecret,attr,omitempty"`
 	AccessToken       string `xml:"accesstoken,attr,omitempty"`
 	AccessTokenSecret string `xml:"accesstokensecret,attr,omitempty"`
+}
+
+type Github struct {
+	PersonalAccessToken string `xml:"personalaccesstoken,attr,omitempty"`
+	RepoUser            string `xml:"repouser,attr,omitempty"`
+	RepoName            string `xml:"reponame,attr,omitempty"`
+	RefreshRate         int64  `xml:"refreshrate,attr,omitempty"`
+	IssueLabel          string `xml:"issuelabel,attr,omitempty"`
+	ItemLabel           string `xml:"itemlabel,attr,omitempty"`
+	NPCLabel            string `xml:"npclabel,attr,omitempty"`
+	CharacterLabel      string `xml:"characterlabel,attr,omitempty"`
 }
 
 type Graph struct {
