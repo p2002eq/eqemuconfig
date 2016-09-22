@@ -9,13 +9,17 @@ import (
 )
 
 type Config struct {
-	Shortname string    `xml:"world>shortname"`
-	Longame   string    `xml:"world>longname"`
+	World     World     `xml:"world,omitempty"`
 	Database  Database  `xml:"database,omitempty"`
 	QuestsDir string    `xml:"directories>quests,omitempty"`
 	Discord   Discord   `xml:"discord,omitempty"`
 	Twitter   []Twitter `xml:"twitter,omitempty"`
 	Github    Github    `xml:"github,omitempty"`
+}
+
+type World struct {
+	Shortname string `xml:"shortname"`
+	Longname  string `xml:"longname"`
 }
 
 type Database struct {
