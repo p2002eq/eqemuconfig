@@ -44,8 +44,8 @@ type Discord struct {
 	ChannelID      string    `xml:"channelid,omitempty"`
 	RefreshRate    int64     `xml:"refreshrate,omitempty"`
 	Channels       []Channel `xml:"channel"`
-	TelnetUsername string    `xml:"username,omitempty"`
-	TelnetPassword string    `xml:"password,omitempty"`
+	TelnetUsername string    `xml:"telnetusername,omitempty"`
+	TelnetPassword string    `xml:"telnetpassword,omitempty"`
 }
 
 type Channel struct {
