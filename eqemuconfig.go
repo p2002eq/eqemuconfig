@@ -20,6 +20,13 @@ type Config struct {
 type World struct {
 	Shortname string `xml:"shortname"`
 	Longname  string `xml:"longname"`
+	Tcp       Tcp    `xml:"tcp,omitempty"`
+}
+
+type Tcp struct {
+	Ip     string `xml:"ip,attr"`
+	Port   string `xml:"port,attr"`
+	Telnet string `xml:"telnet,attr"`
 }
 
 type Database struct {
@@ -31,12 +38,14 @@ type Database struct {
 }
 
 type Discord struct {
-	Username    string    `xml:"username,omitempty"`
-	Password    string    `xml:"password,omitempty"`
-	ServerID    string    `xml:"serverid,omitempty"`
-	ChannelID   string    `xml:"channelid,omitempty"`
-	RefreshRate int64     `xml:"refreshrate,omitempty"`
-	Channels    []Channel `xml:"channel"`
+	Username       string    `xml:"username,omitempty"`
+	Password       string    `xml:"password,omitempty"`
+	ServerID       string    `xml:"serverid,omitempty"`
+	ChannelID      string    `xml:"channelid,omitempty"`
+	RefreshRate    int64     `xml:"refreshrate,omitempty"`
+	Channels       []Channel `xml:"channel"`
+	TelnetUsername string    `xml:"username,omitempty"`
+	TelnetPassword string    `xml:"password,omitempty"`
 }
 
 type Channel struct {
