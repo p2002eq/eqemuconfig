@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"strings"
+	"time"
 )
 
 type Config struct {
@@ -38,20 +39,26 @@ type Database struct {
 }
 
 type Discord struct {
-	Username       string    `xml:"username,omitempty"`
-	Password       string    `xml:"password,omitempty"`
-	ServerID       string    `xml:"serverid,omitempty"`
-	ChannelID      string    `xml:"channelid,omitempty"`
-	RefreshRate    int64     `xml:"refreshrate,omitempty"`
-	ItemUrl        string    `xml:"itemurl,omitempty""`
-	Channels       []Channel `xml:"channel"`
-	TelnetUsername string    `xml:"telnetusername,omitempty"`
-	TelnetPassword string    `xml:"telnetpassword,omitempty"`
+	Username       string        `xml:"username,omitempty"`
+	Password       string        `xml:"password,omitempty"`
+	ServerID       string        `xml:"serverid,omitempty"`
+	ChannelID      string        `xml:"channelid,omitempty"`
+	RefreshRate    time.Duration `xml:"refreshrate,omitempty"`
+	ItemUrl        string        `xml:"itemurl,omitempty""`
+	Channels       []Channel     `xml:"channel"`
+	Admins         []Admin       `xml:"admin"`
+	TelnetUsername string        `xml:"telnetusername,omitempty"`
+	TelnetPassword string        `xml:"telnetpassword,omitempty"`
 }
 
 type Channel struct {
 	ChannelID   string `xml:"channelid,attr"`
 	ChannelName string `xml:"channelname,attr"`
+}
+
+type Admin struct {
+	Name string `xml:"name,attr"`
+	Id   string `xml:"id,attr"`
 }
 
 type Twitter struct {
