@@ -44,7 +44,7 @@ type Discord struct {
 	ServerID       string        `xml:"serverid,omitempty"`
 	ChannelID      string        `xml:"channelid,omitempty"`
 	RefreshRate    time.Duration `xml:"refreshrate,omitempty"`
-	ItemUrl        string        `xml:"itemurl,omitempty""`
+	ItemUrl        string        `xml:"itemurl,omitempty"`
 	Channels       []Channel     `xml:"channel"`
 	Admins         []Admin       `xml:"admin"`
 	TelnetUsername string        `xml:"telnetusername,omitempty"`
