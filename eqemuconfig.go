@@ -22,12 +22,21 @@ type World struct {
 	Shortname string `xml:"shortname"`
 	Longname  string `xml:"longname"`
 	Tcp       Tcp    `xml:"tcp,omitempty"`
+	Telnet    Telnet `xml:"telnet,omitempty"`
 }
 
+//This was used by configs prior to 4/16 patch
 type Tcp struct {
 	Ip     string `xml:"ip,attr"`
 	Port   string `xml:"port,attr"`
 	Telnet string `xml:"telnet,attr"`
+}
+
+//This is used by configs after 4/16 patch
+type Telnet struct {
+	Ip      string `xml:"ip,attr"`
+	Port    string `xml:"port,attr"`
+	Enabled string `xml:"enabled,attr"`
 }
 
 type Database struct {
