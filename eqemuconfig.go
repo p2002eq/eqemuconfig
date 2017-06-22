@@ -110,7 +110,6 @@ func GetConfig() (respConfig *Config, err error) {
 		}
 
 		path := os.Getenv("EQEMU_CONFIG")
-		fmt.Println(path)
 		if f, err = os.Open(path); err != nil {
 			err = fmt.Errorf("Error opening config: %s", err.Error())
 			return
