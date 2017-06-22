@@ -103,8 +103,18 @@ func GetConfig() (respConfig *Config, err error) {
 
 	f, err := os.Open("eqemu_config.xml")
 	if err != nil {
-		err = fmt.Errorf("Error opening config: %s", err.Error())
-		return
+		//try to load via env variable
+		if err.Error() == "no such file or directory" {
+			err = fmt.Errorf("Error opening config: %s", err.Error())
+			return
+		}
+
+		path := os.Getenv("EQEMU_CONFIG")
+		fmt.Println(path)
+		if f, err = os.Open(path); err != nil {
+			err = fmt.Errorf("Error opening config: %s", err.Error())
+			return
+		}
 	}
 	config = &Config{}
 	dec := xml.NewDecoder(f)
