@@ -6,9 +6,16 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"strconv"
 	"strings"
 	"time"
+
+	"github.com/pkg/errors"
 )
+
+type JsonConfig struct {
+	Config *Config `json:"server,omitempty"`
+}
 
 type Config struct {
 	World     World     `json:"world,omitempty" xml:"world,omitempty"`
@@ -49,16 +56,17 @@ type Database struct {
 }
 
 type Discord struct {
-	Username       string        `json:"username,omitempty" xml:"username,omitempty"`
-	Password       string        `json:"password,omitempty" xml:"password,omitempty"`
-	ServerID       string        `json:"serverid,omitempty" xml:"serverid,omitempty"`
-	ChannelID      string        `json:"channelid,omitempty" xml:"channelid,omitempty"`
-	RefreshRate    time.Duration `json:"refreshrate,omitempty" xml:"refreshrate,omitempty"`
-	ItemUrl        string        `json:"itemurl,omitempty" xml:"itemurl,omitempty"`
-	Channels       []Channel     `json:"channel" xml:"channel"`
-	Admins         []Admin       `json:"admin" xml:"admin"`
-	TelnetUsername string        `json:"telnetusername,omitempty" xml:"telnetusername,omitempty"`
-	TelnetPassword string        `json:"telnetpassword,omitempty" xml:"telnetpassword,omitempty"`
+	Username          string `json:"username,omitempty" xml:"username,omitempty"`
+	Password          string `json:"password,omitempty" xml:"password,omitempty"`
+	ServerID          string `json:"serverid,omitempty" xml:"serverid,omitempty"`
+	ChannelID         string `json:"channelid,omitempty" xml:"channelid,omitempty"`
+	RefreshRate       time.Duration
+	RefreshRateString string    `json:"refreshrate,omitempty" xml:"refreshrate,omitempty"`
+	ItemUrl           string    `json:"itemurl,omitempty" xml:"itemurl,omitempty"`
+	Channels          []Channel `json:"channel" xml:"channel"`
+	Admins            []Admin   `json:"admin" xml:"admin"`
+	TelnetUsername    string    `json:"telnetusername,omitempty" xml:"telnetusername,omitempty"`
+	TelnetPassword    string    `json:"telnetpassword,omitempty" xml:"telnetpassword,omitempty"`
 }
 
 type Channel struct {
@@ -94,84 +102,80 @@ type Graph struct {
 	TablePrefix string `json:"tableprefix,attr,omitempty" xml:"tableprefix,attr,omitempty"`
 }
 
-var config *Config
+var configInstance *Config
 
-func GetConfig() (respConfig *Config, err error) {
-	if config != nil {
-		respConfig = config
+func GetConfig() (config *Config, err error) {
+	if configInstance != nil {
+		config = configInstance
 		return
 	}
 
-	respConfig, err = loadJson()
+	config, err = loadJson()
 	if err != nil {
-		respConfig, err = loadXML()
+		lastErr := err
+		config, err = loadXML()
 		if err != nil {
+			err = errors.Wrapf(err, "failed to load json: %s,  xml", lastErr.Error())
 			return
 		}
 	}
+	configInstance = config
 	return
 }
 
-func loadJson() (respConfig *Config, err error) {
+func loadJson() (config *Config, err error) {
 	f, err := os.Open("eqemu_config.json")
 	if err != nil {
-		//try to load via env variable
-		if err.Error() == "no such file or directory" {
-			err = fmt.Errorf("Error opening config: %s", err.Error())
-			return
-		}
-
+		//how about via env variable?
 		path := os.Getenv("EQEMU_CONFIG")
 		if f, err = os.Open(path); err != nil {
-			err = fmt.Errorf("Error opening config: %s", err.Error())
+			err = errors.Wrap(err, "failed to open config")
 			return
 		}
+		err = nil
 	}
-	config = &Config{}
+	jsonConfig := &JsonConfig{}
 	dec := json.NewDecoder(f)
-	err = dec.Decode(config)
+	err = dec.Decode(jsonConfig)
 	if err != nil {
-		if !strings.Contains(err.Error(), "EOF") {
-			err = fmt.Errorf("Error decoding config: %s", err.Error())
-			return
-		}
-
-		//This may be a ?> issue, let's fix it.
-		bConfig, rErr := ioutil.ReadFile("eqemu_config.json")
-		if rErr != nil {
-			err = fmt.Errorf("Error reading config: %s", rErr.Error())
-			return
-		}
-		err = json.Unmarshal(bConfig, config)
-		if err != nil {
-			err = fmt.Errorf("Failed to unmarshal config: %s", err.Error())
-			return
-		}
+		err = errors.Wrap(err, "failed to unmarshal config")
+		return
 	}
+	config = jsonConfig.Config
 	err = f.Close()
 	if err != nil {
-		err = fmt.Errorf("Failed to close config: %s", err.Error())
+		err = errors.Wrap(err, "failed to close config")
 		return
 	}
 	if config.QuestsDir == "" {
 		config.QuestsDir = "quests"
 	}
-	respConfig = config
+
+	//first see if it's an integer
+	refreshRate, err := strconv.ParseInt(config.Discord.RefreshRateString, 64, 10)
+	if err != nil { //not an integer
+		//is it a proper duration?
+		config.Discord.RefreshRate, err = time.ParseDuration(config.Discord.RefreshRateString)
+		//not a proper duration
+		if err != nil {
+			//use default 5 seconds
+			config.Discord.RefreshRate = 5 * time.Second
+			err = nil
+			return
+		}
+		//use parsed time
+		return
+	}
+	config.Discord.RefreshRate, _ = time.ParseDuration(fmt.Sprintf("%ds", refreshRate))
 	return
 }
 
-func loadXML() (respConfig *Config, err error) {
+func loadXML() (config *Config, err error) {
 	f, err := os.Open("eqemu_config.xml")
 	if err != nil {
-		//try to load via env variable
-		if err.Error() == "no such file or directory" {
-			err = fmt.Errorf("Error opening config: %s", err.Error())
-			return
-		}
-
 		path := os.Getenv("EQEMU_CONFIG")
 		if f, err = os.Open(path); err != nil {
-			err = fmt.Errorf("Error opening config: %s", err.Error())
+			err = errors.Wrap(err, "failed to open config")
 			return
 		}
 	}
@@ -180,31 +184,46 @@ func loadXML() (respConfig *Config, err error) {
 	err = dec.Decode(config)
 	if err != nil {
 		if !strings.Contains(err.Error(), "EOF") {
-			err = fmt.Errorf("Error decoding config: %s", err.Error())
+			err = errors.Wrap(err, "failed to decode config")
 			return
 		}
 
 		//This may be a ?> issue, let's fix it.
 		bConfig, rErr := ioutil.ReadFile("eqemu_config.xml")
 		if rErr != nil {
-			err = fmt.Errorf("Error reading config: %s", rErr.Error())
+			err = errors.Wrap(err, "failed to read config for repair")
 			return
 		}
 		strConfig := strings.Replace(string(bConfig), "<?xml version=\"1.0\">", "<?xml version=\"1.0\"?>", 1)
 		err = xml.Unmarshal([]byte(strConfig), config)
 		if err != nil {
-			err = fmt.Errorf("Failed to unmarshal config: %s", err.Error())
+			err = errors.Wrap(err, "failed to unmarshal config after repair")
 			return
 		}
 	}
 	err = f.Close()
 	if err != nil {
-		err = fmt.Errorf("Failed to close config: %s", err.Error())
+		err = errors.Wrap(err, "failed to close config")
 		return
 	}
 	if config.QuestsDir == "" {
 		config.QuestsDir = "quests"
 	}
-	respConfig = config
+	//first see if it's an integer
+	refreshRate, err := strconv.ParseInt(config.Discord.RefreshRateString, 64, 10)
+	if err != nil { //not an integer
+		//is it a proper duration?
+		config.Discord.RefreshRate, err = time.ParseDuration(config.Discord.RefreshRateString)
+		//not a proper duration
+		if err != nil {
+			//use default 5 seconds
+			config.Discord.RefreshRate = 5 * time.Second
+			err = nil
+			return
+		}
+		//use parsed time
+		return
+	}
+	config.Discord.RefreshRate, _ = time.ParseDuration(fmt.Sprintf("%ds", refreshRate))
 	return
 }
