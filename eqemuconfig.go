@@ -24,6 +24,7 @@ type Config struct {
 	Discord   Discord   `json:"discord,omitempty" xml:"discord,omitempty"`
 	Twitter   []Twitter `json:"twitter,omitempty" xml:"twitter,omitempty"`
 	Github    Github    `json:"github,omitempty" xml:"github,omitempty"`
+	NATS      NATS      `json:"nats,omitempty" xml:"nats,omitempty"`
 }
 
 type World struct {
@@ -55,11 +56,17 @@ type Database struct {
 	Db       string `json:"db" xml:"db"`
 }
 
+type NATS struct {
+	Host string `xml:"host"`
+	Port string `xml:"port"`
+}
+
 type Discord struct {
 	Username          string `json:"username,omitempty" xml:"username,omitempty"`
 	Password          string `json:"password,omitempty" xml:"password,omitempty"`
 	ServerID          string `json:"serverid,omitempty" xml:"serverid,omitempty"`
 	ChannelID         string `json:"channelid,omitempty" xml:"channelid,omitempty"`
+	CommandChannelID  string `json:"commandchannelid,omitempty" xml:"commandchannelid,omitempty"`
 	RefreshRate       time.Duration
 	RefreshRateString string    `json:"refreshrate,omitempty" xml:"refreshrate,omitempty"`
 	ItemUrl           string    `json:"itemurl,omitempty" xml:"itemurl,omitempty"`
