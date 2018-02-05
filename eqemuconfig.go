@@ -57,8 +57,8 @@ type Database struct {
 }
 
 type NATS struct {
-	Host string `xml:"host"`
-	Port string `xml:"port"`
+	Host string `json:"host" xml:"host"`
+	Port string `json:"port" xml:"port"`
 }
 
 type Discord struct {
