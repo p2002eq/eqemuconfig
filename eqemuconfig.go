@@ -64,6 +64,7 @@ type NATS struct {
 type Discord struct {
 	Username          string `json:"username,omitempty" xml:"username,omitempty"`
 	Password          string `json:"password,omitempty" xml:"password,omitempty"`
+	ClientID          string `json:"clientid,omitempty" xml:"clientid,omitempty"`
 	ServerID          string `json:"serverid,omitempty" xml:"serverid,omitempty"`
 	ChannelID         string `json:"channelid,omitempty" xml:"channelid,omitempty"`
 	CommandChannelID  string `json:"commandchannelid,omitempty" xml:"commandchannelid,omitempty"`
