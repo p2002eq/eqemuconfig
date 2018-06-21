@@ -75,6 +75,14 @@ type Discord struct {
 	Admins            []Admin   `json:"admin" xml:"admin"`
 	TelnetUsername    string    `json:"telnetusername,omitempty" xml:"telnetusername,omitempty"`
 	TelnetPassword    string    `json:"telnetpassword,omitempty" xml:"telnetpassword,omitempty"`
+	AuctionID         string 	`json:"auctionid,omitempty" xml:"auctionid,omitempty"`
+	GuildID5         string 	`json:"guildid5,omitempty" xml:"guildid5,omitempty"`
+	GuildID8         string 	`json:"guildid8,omitempty" xml:"guildid8,omitempty"`
+	GuildID20         string 	`json:"guildid20,omitempty" xml:"guildid20,omitempty"`
+	GuildID26         string 	`json:"guildid26,omitempty" xml:"guildid26,omitempty"`
+	GuildID38         string 	`json:"guildid38,omitempty" xml:"guildid38,omitempty"`
+	GuildID40         string 	`json:"guildid40,omitempty" xml:"guildid40,omitempty"`
+	GuildID68         string 	`json:"guildid68,omitempty" xml:"guildid68,omitempty"`
 }
 
 type Channel struct {
